@@ -1,0 +1,18 @@
+*{
+    box-sizing: content-box;/*一个矩形容器（界面）*/
+    font-size: 15px;/*字体大小15个像素*/
+}
+
+html,body, #app{
+    height: 100%;
+    margin: 0;/*页边，外边距*/
+    padding: 0;/*内边距*/
+}
+
+.height100p{
+    height: 100%;
+}
+
+#app{
+    width:100%;
+}
