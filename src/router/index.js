@@ -16,12 +16,10 @@ const routes=[
         name:'home',
         component: ()=>import('../views/Home'),
         children:[
-            /*
             {
                 path:'staffsInfo',
-                component:()=>import('../components/')
+                component:()=>import('../components/staff/staffInfo')
             },
-            */
             {
                 path:'sellRecord',
                 component:()=>import('../components/sell/sellRecord')

@@ -4,181 +4,245 @@
       <div id="searchBox">
         <el-input v-model="searchItem.id" style="width:25%;margin-left: 25%;margin-right: 2%;margin-top: 30px"
                   aria-placeholder="搜索商品id"></el-input>
+        <el-button type="success" @click="searchMessage">搜索</el-button>
+        <el-button type="success" @click="reset">重置</el-button>
       </div>
     </div>
-
+    <div id="tableChild">
+      <el-table
+        :data="tableData" stripe size="mini" highlight-current-row
+        border
+        max-height="380"
+        >
+        <el-table-column
+          fixed
+          prop="goodsId"
+          label="商品id"
+          align="center"
+          min-width="80">
+        </el-table-column>
+        <el-table-column
+          prop="goodsName"
+          label="商品名"
+          align="center"
+          min-width="120">
+        </el-table-column>
+        <el-table-column
+          prop="price"
+          label="单价"
+          align="center"
+          min-width="100">
+        </el-table-column>
+        <el-table-column
+          prop="amount"
+          label="存货量"
+          align="center"
+          min-width="100"></el-table-column>
+        <el-table-column
+          prop="num"
+          label="购买数量"
+          align="center"
+          min-width="100">
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          align="center"
+          min-width="100">
+          <template slot-scope="scope">
+            <el-button type="text" size="small">
+              <span class="iconfont icon-jian" @click="reduceGoods(scope.row)"></span>
+            </el-button>
+            <el-button type="text" size="small">
+              <span class="iconfont icon-jia1" style="font-size: 12px"
+                    @click="addGoods(scope.row)"></span>
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <div class="block" id="pagination">
+      <el-pagination
+        style="float: left;margin-left: 10%"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="page"
+        :page-sizes="[5,10,15,20]"
+        :page-size="pageSize"
+        layout="total,sizes,prev,pager,next,jumper"
+        :total="goodsTotal">
+      </el-pagination>
+      <el-button type="success" id="addOrder" @click="commitOrder">提交订单</el-button>
+    </div>
   </div>
-
 </template>
 
 <script>
 export default {
   name: "sellOrder",
-  data(){
-    return{
-      searchItem:{
-        id:null,
-        goodsName:null,
-        price:null
+  data() {
+    return {
+      searchItem: {
+        id: null,
+        goodsName: null,
+        price: null
       },
       tableData: [],
       tableData1: [],
       tableAllData: [],
       currentPage4: 4,
-      data1:{
+      data1: {
         id: '',
-        sellItem:[
+        sellItem: [
           {}
         ]
       },
-      page:1,
-      pageSize:5,
-      goodsTotal:100,
-      post:{
-        id:'123',
-        name:'zn'
+      page: 1,
+      pageSize: 5,
+      goodsTotal: 100,
+      post: {
+        id: '123',
+        name: 'zn'
       }
     }
   },
-  methods:{
-    searchMessage(){
+  methods: {
+    searchMessage() {
       let id = this.searchItem.id
-      this.tableData=this.tableAllData.filter(function (item){
+      this.tableData = this.tableAllData.filter(function (item) {
         console.log(id)
         console.log(item)
         console.log(item.id)
-        if(item.goodsId == id)
+        if (item.goodsId == id)
           return item
       })
       console.log(this.tableData)
     },
-    reduceGoods(row){
+    reduceGoods(row) {
       console.log(row);
-      if(row.num ==0){
+      if (row.num == 0) {
         this.$message({
-          message:'数量不能为负',
-          type:'warning'
+          message: '数量不能为负',
+          type: 'warning'
         })
-      }
-      else {
+      } else {
         row.num--
-        this.tableAllData.forEach(function (item,index){
-          if(item.goodsId == row.goodsId){
-            item.num=row.num
+        this.tableAllData.forEach(function (item, index) {
+          if (item.goodsId == row.goodsId) {
+            item.num = row.num
           }
         })
       }
     },
-    addGoods(row){
-      if(row.num==row.amount){
+    addGoods(row) {
+      if (row.num == row.amount) {
         this.$message({
-          message:'数量不能超过最大存货量',
-          type:'warning'
+          message: '数量不能超过最大存货量',
+          type: 'warning'
         })
-      }
-      else{
+      } else {
         row.num++
-        this.tableAllData.forEach(function (item,index){
-          if(item.goodsId == row.goodsId)
-            item.num=row.num
+        this.tableAllData.forEach(function (item, index) {
+          if (item.goodsId == row.goodsId)
+            item.num = row.num
         })
       }
       console.log(this.tableAllData)
     },
-    handleSizeChange(val){
+    handleSizeChange(val) {
       console.log('每页${val}条');
-      this.pageSize=val
+      this.pageSize = val
       this.getGoodsMsg()
     },
-    async handleCurrentChange(val){//异步函数
+    async handleCurrentChange(val) {//异步函数
       console.log('当前页:${val}');
-      await this.getGoodsMsg(val,this.pageSize)
+      await this.getGoodsMsg(val, this.pageSize)
       console.log(this.tableAllData)
-      this.tableData = this.tableAllData.filter((obj)=>{
-        for(let item of this.tableData){
-          if(obj.goodsId == item.goodsId){
+      this.tableData = this.tableAllData.filter((obj) => {
+        for (let item of this.tableData) {
+          if (obj.goodsId == item.goodsId) {
             return obj
           }
         }
       })
-    }
-  },
+    },
 
-  async getGoodMsg(currentPage = this.page, pageSize = this.pageSize){
-    await this.$http('/sell/goods/'+currentPage+'/'+pageSize).then(resp=>{
-      console.log(resp)
-      for(let item of resp.data.data){
-        item.num=0
-      }
-      this.tableData = []
-      this.tableData = this.tableData.concat(resp.data.data)
-      this.goodsTotal = resp.data.recordsNum
-      this.pageSize = resp.data.pageSize
-    })
-  },
-  getAllGoodsMsg(){
-    this.$http('/sell/goods/1/1000').then(resp=>{
-      console.log(resp)
-      for(let item of resp.data.data){
-        item.num=0
-      }
-      this.tableAllData=[]
-      this.tableAllData=resp.data.data
-    })
-  },
-  async commitOrder(){
-    this.$http.defaults.headers.post['Content-Type']='application/json';
-    let sellItem=[
-      {
-        sellId:"null",
-        goodsId:14,
-        price:4,
-        amount:2
-      },
-      {
-        sellId: "null",
-        goodsId: 15,
-        price: 4,
-        amount:2
-      }
-    ]
-    sellItem=[]
-    this.tableAllData.forEach((item,index)=>{
-      if(item.num!=0){
-        sellItem = sellItem.concat({
-          sellId: "null",
-          goodsId: item.goodsId,
-          price: item.price,
-          amount:item.amount
-        })
-        console.log(sellItem)
-      }
-    })
-    await this.$http.post('/sell/addOrder/1',JSON.stringify(sellItem)).then(resp=>{
-      this.$message('添加成功')
-    })
-    await this.getGoodMsg()
-    await this.getAllGoodsMsg()
-  },
-  async reset(){
-    this.searchItem={
-      id:null,
-      goodsName: null,
-      price: null
-    }
-    await this.getGoodMsg()
-    console.log(this.tableAllData)
-    this.tableData = this.tableAllData.filter((obj)=>{
-      for(let item of this.tableData){
-        if(obj.goodsId == item.goodsId) {
-          return obj
+    async getGoodMsg(currentPage = this.page, pageSize = this.pageSize) {
+      await this.$http('/sell/goods/' + currentPage + '/' + pageSize).then(resp => {
+        console.log(resp)
+        for (let item of resp.data.data) {
+          item.num = 0
         }
+        this.tableData = []
+        this.tableData = this.tableData.concat(resp.data.data)
+        this.goodsTotal = resp.data.recordsNum
+        this.pageSize = resp.data.pageSize
+      })
+    },
+    getAllGoodsMsg() {
+      this.$http('/sell/goods/1/1000').then(resp => {
+        console.log(resp)
+        for (let item of resp.data.data) {
+          item.num = 0
+        }
+        this.tableAllData = []
+        this.tableAllData = resp.data.data
+      })
+    },
+
+    async commitOrder() {
+      this.$http.defaults.headers.post['Content-Type'] = 'application/json';
+      let sellItem = [
+        {
+          sellId: "null",
+          goodsId: 14,
+          price: 4,
+          amount: 2
+        },
+        {
+          sellId: "null",
+          goodsId: 15,
+          price: 4,
+          amount: 2
+        }
+      ]
+      sellItem = []
+      this.tableAllData.forEach((item, index) => {
+        if (item.num != 0) {
+          sellItem = sellItem.concat({
+            sellId: "null",
+            goodsId: item.goodsId,
+            price: item.price,
+            amount: item.amount
+          })
+          console.log(sellItem)
+        }
+      })
+      await this.$http.post('/sell/addOrder/1', JSON.stringify(sellItem)).then(resp => {
+        this.$message('添加成功')
+      })
+      await this.getGoodMsg()
+      await this.getAllGoodsMsg()
+    },
+    async reset() {
+      this.searchItem = {
+        id: null,
+        goodsName: null,
+        price: null
       }
-    })
-  },
-  mounted() {
-    this.getGoodMsg()
-    this.getAllGoodsMsg()
+      await this.getGoodMsg()
+      console.log(this.tableAllData)
+      this.tableData = this.tableAllData.filter((obj) => {
+        for (let item of this.tableData) {
+          if (obj.goodsId == item.goodsId) {
+            return obj
+          }
+        }
+      })
+    },
+    mounted() {
+      this.getGoodMsg()
+      this.getAllGoodsMsg()
+    }
   }
 }
 </script>
