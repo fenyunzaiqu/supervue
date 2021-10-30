@@ -118,7 +118,7 @@ export default {
       this.itemMenu=this.itemMenu.concat(['商品管理','商品库存'])
     },
     toBasicInfo(){
-      this.$router.replace('/home/staffsInfo')
+      this.$router.replace('/home/staff')
       this.itemMenu=[]
       this.itemMenu=this.itemMenu.concat(['员工管理','基本信息'])
     }

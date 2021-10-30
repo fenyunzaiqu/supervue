@@ -9,7 +9,7 @@ import api from "./plugins/api";
 
 
 import router from "./router"
-//import store from "./store"
+import store from "./store"
 import ElementUI from "element-ui";
 import {Loading} from "element-ui";
 import VueRouter from "vue-router";
@@ -22,6 +22,7 @@ Vue.prototype.$http=api;
 
 
 new Vue({
+  store,
   router,
   render: h => h(App),
 }).$mount('#app')

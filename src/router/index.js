@@ -1,12 +1,14 @@
 import Vue from 'vue'
 import VueRouter from "vue-router";
 import ElementUI, {Loading} from "element-ui";
+import {Form} from 'element-ui';
 import Login from "../views/Login"
 import 'element-ui/lib/theme-chalk/index.css'
 
 Vue.use(VueRouter)
 Vue.use(ElementUI)
 Vue.use(Loading);
+Vue.use(Form);
 
 const routes=[
     {path: '/',redirect:"/login"},
@@ -17,8 +19,8 @@ const routes=[
         component: ()=>import('../views/Home'),
         children:[
             {
-                path:'staffsInfo',
-                component:()=>import('../components/staff/staffInfo')
+                path:'staff',
+                component:()=>import('../components/staff/staff')
             },
             {
                 path:'sellRecord',

@@ -9,6 +9,7 @@ const instance = axios.create({
 
 instance.defaults.headers.post['Content-Type']='application/x-www-form-urlencoded';
 
+/*
 instance.interceptors.request.use(config=>{
     const token=localStorage.getItem('token');
     token &&(config.headers.Authorization = token);
@@ -17,6 +18,7 @@ instance.interceptors.request.use(config=>{
     Message.error({message:'请求超时，请稍后重试'});
     return Promise.resolve(error);
 })
+*/
 
 instance.interceptors.response.use(resp=>{
     if(resp.status&&resp.status===200&&resp.data.status===500){

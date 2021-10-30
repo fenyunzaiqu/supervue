@@ -4,7 +4,7 @@
       <!--使用v-loading在接口未请求到数据之前，显示加载中，直到请求到数据后消失。
       loading-text是登陆文本-->
       <!--  username  el-form表格，el-form-item表格元素 -->
-      <el-form>
+      <el-form label-width="0px" class="login_form" :rules="rules" :model="loginForm" ref="loginFormRef">
       <el-form-item prop="adminName">
         <el-input size="normal" type="text" v-model="loginForm.adminName" auto-complete="off"
                   placeholder="请输入用户名" prefix-icon="el-icon-user"></el-input>
@@ -58,7 +58,8 @@ export default {
     }
   },
   methods:{
-    login(){
+    login()
+    {
       this.$refs.loginFormRef.validate(valid=>{
         if(valid){
           this.loading=true;

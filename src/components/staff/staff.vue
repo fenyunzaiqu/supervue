@@ -19,11 +19,11 @@
       <el-table :data="staffData" border stripe size="mini" highlight-current-row>
         <el-table-column prop="name" fixed align="left"
                          label="姓名" width="90"></el-table-column>
-        <el-table-column prop="gender" label="性别"
+        <el-table-column prop="sex" label="性别"
                          align="left" width="85"></el-table-column>
-        <el-table-column prop="idCard" label="身份证"
+        <el-table-column prop="identity" label="身份证"
                          align="left" width="130"></el-table-column>
-        <el-table-column prop="phone" label="电话号码"
+        <el-table-column prop="phoneNum" label="电话号码"
                          align="left" width="130"></el-table-column>
         <el-table-column prop="email" label="电子邮箱"
                          align="left" width="180"></el-table-column>
@@ -55,7 +55,7 @@
 
 <script>
 export default {
-  name: "staffInfo",
+  name: "staff",
   data(){
     return{
       staffData:[],
@@ -109,6 +109,7 @@ export default {
           this.total=resp.data.recordsNum;
         }
         else{
+          console.log(this.staffName);
           this.$message.error("资料获取失败")
         }
       })
@@ -127,6 +128,7 @@ export default {
           this.total=resp.data.recordsNum;
         }
         else{
+          console.log(this.staffName);
           this.$message.error("获取资料失败")
         }
       })
